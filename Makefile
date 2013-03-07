@@ -1,5 +1,5 @@
 # What to call the final executable
-TARGET = nico
+TARGET = like-raspberries
 
 # Which object files that the executable consists of
 OBJS= http-post.o like.o nfc-utils.o
