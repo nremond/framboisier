@@ -69,7 +69,7 @@ int nfc_poll(nfc_target *pnt)
   printf ("NFC device will poll during %ld ms (%u pollings of %lu ms for %zd modulations)\n", (unsigned long) uiPollNr * szModulations * uiPeriod * 150, uiPollNr, (unsigned long) uiPeriod * 150, szModulations);
   int res = 0;
   if ((res = nfc_initiator_poll_target (pnd, nmModulations, szModulations, uiPollNr, uiPeriod, pnt))  < 0) {
-    // TODO move that out of here
+    // TODO move that code out of here
     nfc_perror (pnd, "nfc_initiator_poll_target");
     nfc_close (pnd);
     nfc_exit (NULL);
@@ -80,9 +80,24 @@ int nfc_poll(nfc_target *pnt)
 }
 
 
+void to_hex_string(const uint8_t *buff, char *str)
+{
+  // TODO assert the size of str ... 
 
-int
-main (int argc, const char *argv[])
+  const char * hex = "0123456789abcdef";
+  const unsigned char * pin = buff;
+  char * pout = str;
+  int j = 0;
+  for(; j < sizeof(buff); ++j){
+    *pout++ = hex[(*pin>>4)&0xF];
+    *pout++ = hex[(*pin++)&0xF];
+  }
+  *pout = 0;
+}
+
+
+
+int main (int argc, const char *argv[])
 {
 
   signal (SIGINT, stop_polling);
@@ -108,18 +123,30 @@ main (int argc, const char *argv[])
 
   printf ("NFC reader: %s opened\n", nfc_device_get_name (pnd));
  
-while(1) {
-  nfc_target nt;
-  int res = nfc_poll(&nt);
- 
+  while(1) {
+    nfc_target nt;
+    int res = nfc_poll(&nt);
+   
 
-  if (res > 0) {
-    bool verbose = false;
-    print_nfc_target ( nt, verbose );
-  } else {
-    printf ("No target found.\n");
+    if (res > 0) {
+      bool verbose = false;
+      print_nfc_target ( nt, verbose );
+
+
+      // To finish ... 
+      if(nt.nm.nmt == NMT_ISO14443A)
+      {        
+        nfc_iso14443a_info nai = nt.nti.nai;
+        char hex_uid[21];
+        to_hex_string(nai.abtUid, hex_uid);
+
+        printf("nico_uid=%s\n", hex_uid);
+      }
+
+    } else {
+      printf ("No target found.\n");
+    }
   }
-}
 
 
   nfc_close (pnd);
