@@ -91,7 +91,7 @@ int nfc_poll(nfc_target *pnt)
   return res;
 }
 
-void polling_loop()
+void event_loop()
 {
   for(;;) {
     nfc_target nt;
@@ -152,22 +152,6 @@ int main (const int argc, const char *argv[])
 
   printf("Events will be sent to 'http://%s'\n", server_host);
 
-
-  rest_client_initialize();
-
-  const char *status = post_like_event(server_host, "123");
-  if (status!=NULL) 
-  {
-    printf("et voilà = %s\n", status);
-  }
-
-  rest_client_cleanup();
-  exit (EXIT_SUCCESS);
-
-
-
-
-
   signal (SIGINT, stop_polling);
 
   //TODO remove, no ?
@@ -189,7 +173,7 @@ int main (const int argc, const char *argv[])
 
   printf ("NFC reader: %s opened\n", nfc_device_get_name (pnd));
  
-  polling_loop();
+  event_loop();
 
   cleanup_ressources();
   exit (EXIT_SUCCESS);
