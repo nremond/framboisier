@@ -121,13 +121,6 @@ void event_loop()
   }
 }
 
-void display_nfc_version()
-{
-  // Display libnfc version
-  const char *acLibnfcVersion = nfc_version ();
-  printf ("using libnfc %s\n", acLibnfcVersion);
-}
-
 const char* parse_arguments(const int argc, const char *argv[])
 {
   const char *host_arg = "--server_host";
@@ -150,13 +143,8 @@ int main (const int argc, const char *argv[])
     exit (EXIT_FAILURE);
   }
 
-  printf("Events will be sent to 'http://%s'\n", server_host);
-
   signal (SIGINT, stop_polling);
-
-  //TODO remove, no ?
-  display_nfc_version();
-  
+ 
   initialize_ressources();
 
   pnd = nfc_open (NULL, NULL);
@@ -171,6 +159,7 @@ int main (const int argc, const char *argv[])
     exit (EXIT_FAILURE);    
   }
 
+  printf("Events will be sent to 'http://%s' and using libnfc %s\n", server_host, nfc_version());
   printf ("NFC reader: %s opened\n", nfc_device_get_name (pnd));
  
   event_loop();
