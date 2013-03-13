@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 #include <stdio.h>
 #include <curl/curl.h>
 #include <assert.h>
@@ -29,18 +28,28 @@ void rest_client_cleanup()
   curl_global_cleanup();
 }
 
-const char* post_like_event(char *hex_uid)
+size_t http_write(void* buf, size_t size, size_t nmemb, void* userp)
 {
-  char post_fiels[100];
+  printf("body=%s\n", (char*)buf);
+  return nmemb;
+}
+
+const char* post_like_event(const char *server_host, const char *hex_uid)
+{
+  char post_fiels[128];
   const char *uid_param_name = "user_uid";
   assert( sizeof(hex_uid) + sizeof(uid_param_name) < sizeof(post_fiels)+1 );
-  sprintf(post_fiels, "%s=%s", uid_param_name, hex_uid);
+  snprintf(post_fiels, 128, "%s=%s", uid_param_name, hex_uid);
 
   CURL *curl = curl_easy_init();
   if(curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:5000/dump/body");
+    char url[256];
+    snprintf(url, 256, "http://%s/dump/post_form", server_host);
+
+    curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fiels);
-    
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, http_write);
+
     CURLcode res = curl_easy_perform(curl);
     
     curl_easy_cleanup(curl);

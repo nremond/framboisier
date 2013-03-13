@@ -16,4 +16,4 @@
 
  void rest_client_initialize();
  void rest_client_cleanup();
- const char* post_like_event(char *hex_uid);
+ const char* post_like_event(const char *server_host, const char *hex_uid);

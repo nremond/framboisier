@@ -22,6 +22,7 @@
 #include <nfc/nfc-types.h>
 
 #include "nfc-utils.h"
+#include "rest-client.h"
 
 #define MAX_DEVICE_COUNT 16
 
@@ -45,12 +46,16 @@ void to_hex_string(const uint8_t *buff, char *str)
 void initialize_ressources()
 {
   nfc_init (NULL);
+  
+  rest_client_initialize();
 }
 
 void cleanup_ressources()
 {
   nfc_close (pnd);
   nfc_exit (NULL);
+
+  rest_client_cleanup();
 }
 
 void stop_polling (int sig)
@@ -123,8 +128,45 @@ void display_nfc_version()
   printf ("using libnfc %s\n", acLibnfcVersion);
 }
 
-int main (int argc, const char *argv[])
+const char* parse_arguments(const int argc, const char *argv[])
 {
+  const char *host_arg = "--server_host";
+  if(argc!=3 || strcmp(argv[1], host_arg)!=0) 
+  {
+    printf("usage: %s %s foo.local\n", argv[0], host_arg);
+    return NULL;
+  } 
+  else 
+  {
+    return argv[2];
+  }
+}
+
+
+int main (const int argc, const char *argv[])
+{
+  const char *server_host = parse_arguments(argc, argv);
+  if(server_host == NULL) {
+    exit (EXIT_FAILURE);
+  }
+
+  printf("Events will be sent to 'http://%s'\n", server_host);
+
+
+  rest_client_initialize();
+
+  const char *status = post_like_event(server_host, "123");
+  if (status!=NULL) 
+  {
+    printf("et voilà = %s\n", status);
+  }
+
+  rest_client_cleanup();
+  exit (EXIT_SUCCESS);
+
+
+
+
 
   signal (SIGINT, stop_polling);
 
