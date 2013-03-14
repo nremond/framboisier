@@ -38,7 +38,7 @@ const char* post_like_event(const char *server_host, const char *hex_uid)
 {
   char post_fiels[128];
   const char *uid_param_name = "user_uid";
-  assert( sizeof(hex_uid) + sizeof(uid_param_name) < sizeof(post_fiels)+1 );
+  assert( strlen(hex_uid) + strlen(uid_param_name) < sizeof(post_fiels)+1 );
   snprintf(post_fiels, 128, "%s=%s", uid_param_name, hex_uid);
 
   CURL *curl = curl_easy_init();
@@ -60,6 +60,6 @@ const char* post_like_event(const char *server_host, const char *hex_uid)
       return NULL;
     }
   } else {
-    return "Impossible initialize CURL";
+    return "Impossible to initialize CURL";
   }
 }

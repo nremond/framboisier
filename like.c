@@ -28,43 +28,44 @@
 
 static nfc_device *pnd = NULL;
 
-void to_hex_string(const uint8_t *buff, char *str)
+void to_hex_string(const uint8_t *buff, size_t buff_size, char *str, size_t str_size)
 {
-  assert( buff != NULL );
-  assert( sizeof(str) > sizeof(buff) );
+  assert(buff != NULL);
+  assert(str != NULL);
+  assert( buff_size*2 < str_size);
 
   const char * hex = "0123456789abcdef";
-  const unsigned char * pin = buff;
+  const uint8_t * pbuff = buff;
   char * pout = str;
-  for(int j = 0; j < sizeof(buff); ++j){
-    *pout++ = hex[(*pin>>4) & 0xF];
-    *pout++ = hex[(*pin++) & 0xF];
+  for(int j = 0; j < buff_size; ++j){
+    *pout++ = hex[(*pbuff>>4) & 0xF];
+    *pout++ = hex[(*pbuff++) & 0xF];
   }
   *pout = 0;
 }
 
 void initialize_ressources()
 {
-  nfc_init (NULL);
+  nfc_init(NULL);
   
   rest_client_initialize();
 }
 
 void cleanup_ressources()
 {
-  nfc_close (pnd);
-  nfc_exit (NULL);
+  nfc_close(pnd);
+  nfc_exit(NULL);
 
   rest_client_cleanup();
 }
 
-void stop_polling (int sig)
+void stop_polling(int sig)
 {
   (void) sig;
   if (pnd)
-    nfc_abort_command (pnd);
+    nfc_abort_command(pnd);
   else
-    exit (EXIT_FAILURE);
+    exit(EXIT_FAILURE);
 }
 
 int nfc_poll(nfc_target *pnt) 
@@ -97,9 +98,7 @@ void event_loop()
     nfc_target nt;
     const int res = nfc_poll(&nt);
    
-
-    if (res > 0) {
-    
+    if (res > 0) { 
       // TODO remove that afterwards
       bool verbose = false;
       print_nfc_target ( nt, verbose );
@@ -108,9 +107,9 @@ void event_loop()
       // To finish ... 
       if(nt.nm.nmt == NMT_ISO14443A)
       {        
-        nfc_iso14443a_info nai = nt.nti.nai;
-        char hex_uid[21];
-        to_hex_string(nai.abtUid, hex_uid);
+        const nfc_iso14443a_info nai = nt.nti.nai;
+        char hex_uid[32];
+        to_hex_string(nai.abtUid, nai.szUidLen, hex_uid, sizeof hex_uid);
 
         printf("nico_uid=%s\n", hex_uid);
       }
@@ -136,31 +135,31 @@ const char* parse_arguments(const int argc, const char *argv[])
 }
 
 
-int main (const int argc, const char *argv[])
+int main(const int argc, const char *argv[])
 {
   const char *server_host = parse_arguments(argc, argv);
   if(server_host == NULL) {
-    exit (EXIT_FAILURE);
+    exit(EXIT_FAILURE);
   }
 
-  signal (SIGINT, stop_polling);
+  signal(SIGINT, stop_polling);
  
   initialize_ressources();
 
   pnd = nfc_open (NULL, NULL);
 
-  if (pnd == NULL) {
+  if(pnd == NULL) {
     ERR ("%s", "Unable to open NFC device.");
     exit (EXIT_FAILURE);
   }
 
-  if (nfc_initiator_init (pnd) < 0) {
+  if(nfc_initiator_init (pnd) < 0) {
     nfc_perror (pnd, "nfc_initiator_init");
     exit (EXIT_FAILURE);    
   }
 
   printf("Events will be sent to 'http://%s' and using libnfc %s\n", server_host, nfc_version());
-  printf ("NFC reader: %s opened\n", nfc_device_get_name (pnd));
+  printf("NFC reader: %s opened\n", nfc_device_get_name (pnd));
  
   event_loop();
 
