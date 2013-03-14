@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-#include <stdio.h>
-#include <curl/curl.h>
-#include <assert.h>
+#include "assert.h"
+#include "stdio.h"
+#include "string.h"
+#include "curl/curl.h"
 
 void rest_client_initialize()
 {

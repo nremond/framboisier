@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#include <signal.h>
-#include <string.h>
-#include <assert.h>
+#include "signal.h"
+#include "string.h"
+#include "assert.h"
 
-#include <nfc/nfc.h>
-#include <nfc/nfc-types.h>
+#include "nfc/nfc.h"
+#include "nfc/nfc-types.h"
 
 #include "nfc-utils.h"
 #include "rest-client.h"
