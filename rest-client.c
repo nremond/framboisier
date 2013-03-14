@@ -37,10 +37,11 @@ size_t http_write(void* buf, size_t size, size_t nmemb, void* userp)
 
 const char* post_like_event(const char *server_host, const char *hex_uid)
 {
-  char post_fiels[128];
-  const char *uid_param_name = "user_uid";
-  assert( strlen(hex_uid) + strlen(uid_param_name) < sizeof(post_fiels)+1 );
-  snprintf(post_fiels, 128, "%s=%s", uid_param_name, hex_uid);
+  const int post_fields_size = 128;
+  char post_fields[post_fields_size];
+  const char *uid_param_name = "uid";
+  assert( strlen(hex_uid) + strlen(uid_param_name) < sizeof(post_fields)+1 );
+  snprintf(post_fields, post_fields_size, "%s=%s", uid_param_name, hex_uid);
 
   CURL *curl = curl_easy_init();
   if(curl) {
@@ -48,7 +49,7 @@ const char* post_like_event(const char *server_host, const char *hex_uid)
     snprintf(url, 256, "http://%s/dump/post_form", server_host);
 
     curl_easy_setopt(curl, CURLOPT_URL, url);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fiels);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_fields);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, http_write);
 
     CURLcode res = curl_easy_perform(curl);
