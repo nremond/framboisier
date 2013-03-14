@@ -92,7 +92,7 @@ int nfc_poll(nfc_target *pnt)
   return res;
 }
 
-void event_loop()
+void event_loop(const char *server_host)
 {
   for(;;) {
     nfc_target nt;
@@ -112,6 +112,7 @@ void event_loop()
         to_hex_string(nai.abtUid, nai.szUidLen, hex_uid, sizeof hex_uid);
 
         printf("nico_uid=%s\n", hex_uid);
+        post_like_event(server_host, hex_uid);
       }
 
     } else {
@@ -161,7 +162,7 @@ int main(const int argc, const char *argv[])
   printf("Events will be sent to 'http://%s' and using libnfc %s\n", server_host, nfc_version());
   printf("NFC reader: %s opened\n", nfc_device_get_name (pnd));
  
-  event_loop();
+  event_loop(server_host);
 
   cleanup_ressources();
   exit (EXIT_SUCCESS);
