@@ -17,10 +17,12 @@
 #include "signal.h"
 #include "string.h"
 #include "assert.h"
+#include "unistd.h"
 
 #include "nfc/nfc.h"
 #include "nfc/nfc-types.h"
 
+#include "led.h"
 #include "nfc-utils.h"
 #include "rest-client.h"
 
@@ -46,9 +48,14 @@ void to_hex_string(const uint8_t *buff, size_t buff_size, char *str, size_t str_
 
 void initialize_ressources()
 {
+  /* NFC Client */
   nfc_init(NULL);
   
+  /* REST client */
   rest_client_initialize();
+
+  /* The control LED should be turned off */
+  turn_led_off();
 }
 
 void cleanup_ressources()
@@ -100,8 +107,8 @@ void event_loop(const char *server_host)
    
     if (res > 0) { 
       // TODO remove that afterwards
-      bool verbose = false;
-      print_nfc_target ( nt, verbose );
+      // bool verbose = false;
+      // print_nfc_target ( nt, verbose );
 
 
       // To finish ... 
@@ -113,6 +120,11 @@ void event_loop(const char *server_host)
 
         printf("nico_uid=%s\n", hex_uid);
         post_like_event(server_host, hex_uid);
+
+        turn_led_on();
+        sleep(2); /* in seconds */
+        turn_led_off();
+
       }
 
     } else {

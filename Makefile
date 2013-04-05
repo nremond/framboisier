@@ -2,7 +2,7 @@
 TARGET = like-raspberries
 
 # Which object files that the executable consists of
-OBJS= rest-client.o like.o nfc-utils.o
+OBJS= rest-client.o like.o nfc-utils.o led.o
 
 # What compiler to use
 CC = gcc
