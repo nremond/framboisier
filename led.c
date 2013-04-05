@@ -37,11 +37,11 @@ echo 1 > value
 
 int write_gpio(const int pin, const char *value)
 {
-		char gpio_name[128];
-		sprintf(gpio_name, "/sys/class/gpio/gpio%d/value", pin) ;
-        const int fd = open(gpio_name, O_WRONLY);
-        write(fd, GPIO_ON, 1); /* TODO check the write values ? */
-        return close(fd);
+	char gpio_name[128];
+	sprintf(gpio_name, "/sys/class/gpio/gpio%d/value", pin) ;
+	const int fd = open(gpio_name, O_WRONLY);
+	write(fd, value, 1); /* TODO check the write values ? */
+	return close(fd);
 }
 
 int turn_led_on() 
