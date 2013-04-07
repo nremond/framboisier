@@ -39,7 +39,7 @@ const char* post_like_event(const char *server_host, const char *hex_uid)
 {
   const int post_fields_size = 128;
   char post_fields[post_fields_size];
-  const char *uid_param_name = "uid";
+  const char *uid_param_name = "nfcId";
   assert( strlen(hex_uid) + strlen(uid_param_name) < sizeof(post_fields)+1 );
   snprintf(post_fields, post_fields_size, "%s=%s", uid_param_name, hex_uid);
 
