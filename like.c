@@ -90,7 +90,7 @@ int nfc_poll(nfc_target *pnt)
   printf ("NFC device will poll during %ld ms (%u pollings of %lu ms for %zd modulations)\n", (unsigned long) uiPollNr * szModulations * uiPeriod * 150, uiPollNr, (unsigned long) uiPeriod * 150, szModulations);
   int res = 0;
   if ((res = nfc_initiator_poll_target (pnd, nmModulations, szModulations, uiPollNr, uiPeriod, pnt))  < 0) {
-    // TODO move that code out of here
+    // TODO That should be a "for(;;)" loop !!
     nfc_perror (pnd, "nfc_initiator_poll_target");
     cleanup_ressources();
     exit (EXIT_FAILURE);
