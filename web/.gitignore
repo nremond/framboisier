@@ -3,3 +3,9 @@ project/project
 project/target
 target
 tmp
+.cache
+.classpath
+.project
+.settings
+.target
+bin
