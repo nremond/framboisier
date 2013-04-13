@@ -27,10 +27,9 @@
     </div>
     
     <script type="text/javascript" charset="utf-8">
-    
         $(function() {
             var chatSocket = new WebSocket("@routes.Application.chat().webSocketURL()");
-            
+            chatSocket.confs = [];
             var receiveEvent = function(event) {
                 var data = JSON.parse(event.data);
 
@@ -46,7 +45,7 @@
 
                 var buff = "";
                 $(data.stats).each(function() {
-                    buff += '<tr><td>' + this.nbLikes + '</td> <td>' + this.confName + '</td></tr>';
+                    buff += '<tr><td>' + this.nbLikes + '</td> <td>' + chatSocket.confs[this.confName-1] + '</td></tr>';
                 })
                 $("#stats_entries").html(buff);
             }
@@ -55,7 +54,11 @@
             chatSocket.onmessage = receiveEvent;
             chatSocket.onclose = function(){
                 console.log("c'est fini les cocos");
-            }  
+            }
+            
+            $.getJSON('@routes.Application.conf()', function(data) {
+            	chatSocket.confs = data;	
+            })
         })
     
     </script>

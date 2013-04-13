@@ -28,6 +28,18 @@ object Application extends Controller {
     ChatRoom.join("FakeUsername")
   }
 
+  def conf = Action { implicit request =>
+    Ok(Json.arr("NFC on raspberry",
+        "framboisier voting system",
+        "nfc on android",
+        "is javascript a functional language?",
+        "Iteratee for noobz",
+        "Agile bullshit",
+        "Mobile bullshit",
+        "nfc on android2",
+        "is javascript a functional language?2",
+        "Iteratee for noobz2"))
+  }
 
 //curl -X POST -d "nfcId=3117" http://localhost:9000/like/12
 
