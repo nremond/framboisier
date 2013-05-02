@@ -1,0 +1,32 @@
+[
+	{
+		"name" : "Java, the good, the bad and the ugly",
+		"speaker" : "Josh Bloch",
+		"trackId" : "Java"
+	},
+	{
+		"name" : "What's new in C#",
+		"speaker" : "Microsoft guy",
+		"trackId" : "Microsoft"
+	},
+	{
+		"name" : "Android for beginners",
+		"speaker" : "R2d2",
+		"trackId" : "Mobile"
+	},
+	{
+		"name" : "BigMemory for badasses",
+		"speaker" : "Benoit Perroud",
+		"trackId" : "BigData"
+	},
+	{
+		"name" : "BigMemory for badasses",
+		"speaker" : "Benoit Perroud",
+		"trackId" : "BigData"
+	},
+	{
+		"name" : "AkkaIO",
+		"speaker" : "Viktor Klang",
+		"trackId" : "Incubator"
+	}
+]
