@@ -25,9 +25,21 @@ object Application extends Controller {
    * Handles the chat websocket.
    */
   def chat = WebSocket.async[JsValue] { request  =>    
-    ChatRoom.join("FakeUsername")
+    Leaderboard.join("FakeUsername")
   }
 
+  def conf = Action { implicit request =>
+    Ok(Json.arr("NFC on raspberry",
+        "framboisier voting system",
+        "nfc on android",
+        "is javascript a functional language?",
+        "Iteratee for noobz",
+        "Agile bullshit",
+        "Mobile bullshit",
+        "nfc on android2",
+        "is javascript a functional language?2",
+        "Iteratee for noobz2"))
+  }
 
 //curl -X POST -d "nfcId=3117" http://localhost:9000/like/12
 
@@ -40,11 +52,12 @@ object Application extends Controller {
   val nfcForm = Form(mapping(
     "nfcId" -> nonEmptyText)(NfcDevice.apply)(NfcDevice.unapply))
 
+  
   def like(confId :Int) = Action {
     implicit request => nfcForm.bindFromRequest.fold(
       formWithErrors => BadRequest("crotte"), //formWithErrors.toString),
       nfcDevice => {
-        ChatRoom.default ! Like(confId.toString, nfcDevice.nfcId)
+        Leaderboard.default ! Like(confId.toString, nfcDevice.nfcId)
         Ok(s"c'est tout bon mon roger, nfcId=${nfcDevice.nfcId}, confId=$confId\n")
       }
     )

@@ -17,11 +17,11 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.collection.mutable
 
-object ChatRoom {
+object Leaderboard {
   
   implicit val timeout = Timeout(1 second)
   
-  lazy val default = Akka.system.actorOf(Props[ChatRoom])
+  lazy val default = Akka.system.actorOf(Props[Leaderboard])
 
   def join(username:String): Future[(Iteratee[JsValue,_],Enumerator[JsValue])] = {
 
@@ -37,11 +37,11 @@ object ChatRoom {
   }
 }
 
-class ChatRoom extends Actor {
+class Leaderboard extends Actor {
   
   val votes = new mutable.HashMap[String, mutable.Set[String]] with mutable.MultiMap[String, String]
 
-  val loggerIteratee = Iteratee.foreach[JsValue](event => Logger("chatRoom").info(event.toString))
+  val loggerIteratee = Iteratee.foreach[JsValue](event => Logger("Leaderboard").info(event.toString))
   val (likeEnumerator, likeChannel) = Concurrent.broadcast[JsValue]
   likeEnumerator |>> loggerIteratee
 
